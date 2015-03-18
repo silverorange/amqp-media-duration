@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<command>
+	<description>AMQP worker that calculates media duration using ffmpeg.</description>
+	<version>1.0</version>
+</command>
