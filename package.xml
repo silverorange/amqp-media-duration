@@ -13,8 +13,8 @@
   <email>mike@silverorange.com</email>
   <active>yes</active>
  </lead>
- <date>2015-03-18</date>
- <time>13:19:40</time>
+ <date>2015-03-24</date>
+ <time>11:13:21</time>
  <version>
   <release>0.1.0</release>
   <api>0.1.0</api>
@@ -75,7 +75,7 @@ beta release
     <release>beta</release>
     <api>beta</api>
    </stability>
-   <date>2015-03-18</date>
+   <date>2015-03-24</date>
    <license uri="http://www.opensource.org/licenses/mit-license.html">MIT License</license>
    <notes>
 beta release
