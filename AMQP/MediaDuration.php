@@ -99,6 +99,10 @@ class AMQP_MediaDuration extends SiteAMQPApplication
 			)
 		);
 
+		// This ffprobe command tries to seek to 12-hours into the stream and
+		// then dumps pts_time values for each packet into a JSON-formatted
+		// array. If the stream duration is less than 12-hours, only the final
+		// packet is included in the array.
 		$command = sprintf(
 			'%s '.
 				'-print_format json '.
