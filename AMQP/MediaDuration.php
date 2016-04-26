@@ -90,28 +90,28 @@ class AMQP_MediaDuration extends SiteAMQPApplication
 
 		$command = sprintf(
 			'%s '.
+				'-print_format json '.
+				'-read_intervals 400000%% '.
 				'-select_streams a '.
 				'-show_packets '.
 				'-show_entries packet=pts_time '.
 				'-v quiet '.
-				'%s '.
-			'| '.
-			'grep pts_time '.
-			'| '.
-			'tail -1 '.
-			'| '.
-			'cut -d "=" -f 2 ',
+				'%s ',
 			$this->bin,
 			escapeshellarg($workload['filename'])
 		);
 
-		$duration = intval(
-			round(
-				trim(
-					shell_exec($command)
-				)
-			)
-		);
+		$result = '';
+		exec($command, $result);
+		$result = implode('', $result);
+		$result = json_decode($result, true);
+		if ($result !== null &&
+			is_array($result['packets']) &&
+			count($result['packets']) > 0) {
+
+			$packet = end($result['packets']);
+			$duration = round($packet['pts_time']);
+		}
 
 		$response = array('duration' => $duration);
 
