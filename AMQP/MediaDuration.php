@@ -27,6 +27,17 @@ require_once 'Site/SiteAMQPApplication.php';
  */
 class AMQP_MediaDuration extends SiteAMQPApplication
 {
+	// {{{ class constants
+
+	/**
+	 * Starting offset in seconds to look for pts_time packets with ffprobe
+	 *
+	 * If this is greater than the duration of the stream ffprove just seeks to
+	 * the end of the stream.
+	 */
+	const DEFAULT_OFFSET = 432000; // 12 hours
+
+	// }}}
 	// {{{ protected properties
 
 	/**
@@ -91,26 +102,32 @@ class AMQP_MediaDuration extends SiteAMQPApplication
 		$command = sprintf(
 			'%s '.
 				'-print_format json '.
-				'-read_intervals 400000%% '.
+				'-read_intervals %s%% '.
 				'-select_streams a '.
 				'-show_packets '.
 				'-show_entries packet=pts_time '.
 				'-v quiet '.
 				'%s ',
 			$this->bin,
+			escapeshellarg(self::DEFAULT_OFFSET),
 			escapeshellarg($workload['filename'])
 		);
 
 		$result = '';
 		exec($command, $result);
+
 		$result = implode('', $result);
 		$result = json_decode($result, true);
+
 		if ($result !== null &&
 			is_array($result['packets']) &&
 			count($result['packets']) > 0) {
-
 			$packet = end($result['packets']);
 			$duration = round($packet['pts_time']);
+		} else {
+			$this->logger->error('Error reading media duration.' . PHP_EOL);
+			$job->sendFail('The ffprobe command failed.');
+			return;
 		}
 
 		$response = array('duration' => $duration);
