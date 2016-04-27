@@ -32,7 +32,7 @@ class AMQP_MediaDuration extends SiteAMQPApplication
 	/**
 	 * Starting offset in seconds to look for pts_time packets with ffprobe
 	 *
-	 * If this is greater than the duration of the stream ffprove just seeks to
+	 * If this is greater than the duration of the stream ffprobe just seeks to
 	 * the end of the stream.
 	 */
 	const DEFAULT_OFFSET = 432000; // 12 hours
