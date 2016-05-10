@@ -20,7 +20,9 @@
 		"silverorange/site": "^2.2.0"
 	},
 	"autoload": {
-		"psr-0": [ "AMQP/" ]
+		"psr-0": {
+			"AMQP_MediaDuration": ""
+		}
 	},
 	"include-path": [
 		"./"
