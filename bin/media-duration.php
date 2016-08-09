@@ -4,17 +4,24 @@
 ini_set('display_errors', '1');
 error_reporting(E_ALL | E_STRICT);
 
-require_once 'Site/SiteAMQPCommandLine.php';
-require_once 'Site/SiteCommandLineLogger.php';
-require_once 'AMQP/MediaDuration.php';
+$autoloadPaths = array(
+	// Try to load autoloader if this is the root project.
+	__DIR__ . '/../vendor/autoload.php',
 
-$dir = '@data-dir@/@package-name@/data';
-if ($dir[0] == '@') {
-	$dir = __DIR__ . '/../data';
+	// Try to load an autoloader if this is installed as a library for
+	// another root project.
+	__DIR__ . '/../../../autoload.php',
+);
+
+foreach ($autoloadPaths as $path) {
+	if (file_exists($path)) {
+		require_once $path;
+		break;
+	}
 }
 
 $parser = SiteAMQPCommandLine::fromXMLFile(
-	$dir . '/media-duration.xml'
+	__DIR__ . '/../data/media-duration.xml'
 );
 
 $logger = new SiteCommandLineLogger($parser);
@@ -22,7 +29,7 @@ $app = new AMQP_MediaDuration(
 	'media-duration',
 	$parser,
 	$logger,
-	$dir . '/media-duration.ini'
+	__DIR__ . '/../data/media-duration.ini'
 );
 $app();
 
