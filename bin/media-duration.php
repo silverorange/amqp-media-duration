@@ -13,11 +13,26 @@ $autoloadPaths = array(
 	__DIR__ . '/../../../autoload.php',
 );
 
+$autoloader = null;
 foreach ($autoloadPaths as $path) {
 	if (file_exists($path)) {
-		require_once $path;
+		$autoloader = $path;
 		break;
 	}
+}
+
+if ($autoloader === null) {
+	$stderr = fopen('php://stderr', 'w');
+	fwrite(
+		$stderr,
+		'Unable to find composer autoloader. Make sure dependencies are ' .
+		'installed by running "composer install" before running this script.' .
+		PHP_EOL
+	);
+	fclose($stderr);
+	exit(1);
+} else {
+	require_once $autoloader;
 }
 
 $parser = SiteAMQPCommandLine::fromXMLFile(
