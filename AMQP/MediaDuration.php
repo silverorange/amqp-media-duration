@@ -1,7 +1,5 @@
 <?php
 
-require_once 'Site/SiteAMQPApplication.php';
-
 /**
  * Worker that calculates duration of media using ffmpeg
  *
