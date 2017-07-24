@@ -31,7 +31,7 @@
     "silverorange/site": "^4.0.0"
   },
   "require-dev": {
-    "silverorange/coding-standard": "^0.1.0"
+    "silverorange/coding-standard": "^0.6.0"
   },
   "scripts": {
     "lint": "./vendor/bin/phpcs",
