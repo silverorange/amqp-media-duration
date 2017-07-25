@@ -20,8 +20,8 @@ require_once 'Site/SiteAMQPApplication.php';
  * ```
  *
  * @package   AMQP_MediaDuration
- * @license   http://www.opensource.org/licenses/mit-license.html MIT
  * @copyright 2015 silverorange
+ * @license   http://www.opensource.org/licenses/mit-license.html MIT
  */
 class AMQP_MediaDuration extends SiteAMQPApplication
 {
@@ -81,8 +81,9 @@ class AMQP_MediaDuration extends SiteAMQPApplication
             return;
         }
 
-        if (!is_file($workload['filename']) ||
-            !is_readable($workload['filename'])) {
+        if (!is_file($workload['filename'])
+            || !is_readable($workload['filename'])
+        ) {
             $this->sendFailAndLog($job, 'Media file could not be opened.');
             return;
         }
@@ -163,12 +164,12 @@ class AMQP_MediaDuration extends SiteAMQPApplication
         $result = implode('', $result);
         $result = json_decode($result, true);
 
-        if ($result !== null &&
-            isset($result['format']) &&
-            is_array($result['format']) &&
-            isset($result['format']['format_name']) &&
-            isset($result['format']['duration'])) {
-
+        if ($result !== null
+            && isset($result['format'])
+            && is_array($result['format'])
+            && isset($result['format']['format_name'])
+            && isset($result['format']['duration'])
+        ) {
             $data = array(
                 'format' => $result['format']['format_name'],
                 'duration' => $this->parseDuration(
@@ -222,9 +223,10 @@ class AMQP_MediaDuration extends SiteAMQPApplication
         $result = implode('', $result);
         $result = json_decode($result, true);
 
-        if ($result !== null &&
-            is_array($result['packets']) &&
-            count($result['packets']) > 0) {
+        if ($result !== null
+            && is_array($result['packets'])
+            && count($result['packets']) > 0
+        ) {
             $packet = end($result['packets']);
             $duration = $this->parseDuration($packet['pts_time']);
         }
