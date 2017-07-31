@@ -8,8 +8,13 @@ pipeline {
             }
         }
 
-        stage('Lint') {
+        stage('Lint Modified Files') {
             steps {
+                when {
+                    not {
+                        branch 'master'
+                    }
+                }
                 sh '''
                     master_sha=$(git rev-parse origin/master)
                     newest_sha=$(git rev-parse HEAD)
@@ -21,6 +26,15 @@ pipeline {
                     --extensions=php \
                     $(git diff --diff-filter=ACRM --name-only $master_sha...$newest_sha)
                 '''
+            }
+        }
+
+        stage('Lint Entire Project') {
+            when {
+                branch 'master'
+            }
+            steps {
+                sh './vendor/bin/phpcs'
             }
         }
     }
