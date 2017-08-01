@@ -9,12 +9,12 @@ pipeline {
         }
 
         stage('Lint Modified Files') {
-            steps {
-                when {
-                    not {
-                        branch 'master'
-                    }
+            when {
+                not {
+                    branch 'master'
                 }
+            }
+            steps {
                 sh '''
                     master_sha=$(git rev-parse origin/master)
                     newest_sha=$(git rev-parse HEAD)
