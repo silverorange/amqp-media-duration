@@ -105,7 +105,28 @@ class AMQP_MediaDuration extends SiteAMQPApplication
         if (in_array('mp3', explode(',', strtolower($data['format'])))) {
             // If the file is a MP3 file, ignore the metadata duration and
             // calculate duration based on raw packets.
-            $duration = $this->getDurationFromPackets($workload['filename']);
+
+            // When offset is set to DEFAULT_OFFSET, this ffprobe command
+            // tries to seek to 12-hours into the stream and
+            // then dumps pts_time values for each packet into a JSON-formatted
+            // array. If the stream duration is less than 12-hours, only the
+            // final packet is included in the array.
+            $duration = $this->getDurationFromPackets(
+                $workload['filename'],
+                self::DEFAULT_OFFSET
+            );
+
+            if ($duration === null) {
+                // Depending on the encoding, some MP3s will return no packets
+                // when read_intervals goes past the end of the file. If
+                // no packets are returned, run again and read all packets
+                // (offset of 0). It's slower, but it works.
+                $duration = $this->getDurationFromPackets(
+                    $workload['filename'],
+                    0
+                );
+            }
+
             if ($duration === null) {
                 $this->sendFailAndLog(
                     $job,
@@ -190,18 +211,15 @@ class AMQP_MediaDuration extends SiteAMQPApplication
      *
      * @param string $filename the filename of the media for which to get
      *                         the duration.
+     * @param integer $offset  offset from the start of the file.
      *
      * @return integer the duration of the media or null if the duration
      *                 could not be determined.
      */
-    protected function getDurationFromPackets($filename)
+    protected function getDurationFromPackets($filename, $offset)
     {
         $duration = null;
 
-        // This ffprobe command tries to seek to 12-hours into the stream and
-        // then dumps pts_time values for each packet into a JSON-formatted
-        // array. If the stream duration is less than 12-hours, only the final
-        // packet is included in the array.
         $command = sprintf(
             '%s '.
                 '-print_format json '.
@@ -211,7 +229,7 @@ class AMQP_MediaDuration extends SiteAMQPApplication
                 '-v quiet '.
                 '%s ',
             $this->bin,
-            escapeshellarg(self::DEFAULT_OFFSET),
+            escapeshellarg($offset),
             escapeshellarg($filename)
         );
 
