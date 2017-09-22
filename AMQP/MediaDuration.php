@@ -123,7 +123,10 @@ class AMQP_MediaDuration extends SiteAMQPApplication
                 // when read_intervals goes past the end of the file. If
                 // no packets are returned, run again and read all packets
                 // (offset of 0). It's slower, but it works.
-                $duration = $this->parseMp3Duration($file_path, 0);
+                $duration = $this->getDurationFromPackets(
+                    $workload['filename'],
+                    0
+                );
             }
 
             if ($duration === null) {
