@@ -102,7 +102,7 @@ class AMQP_MediaDuration extends SiteAMQPApplication
             return;
         }
 
-        if (in_array('mp3', explode(',', strtolower($data['format'])))) {
+        if (in_array('mp3', explode(',', mb_strtolower($data['format'])))) {
             // If the file is a MP3 file, ignore the metadata duration and
             // calculate duration based on raw packets.
 
