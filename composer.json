@@ -17,12 +17,7 @@
   "repositories": [
     {
       "type": "composer",
-      "url": "https://composer",
-      "options": {
-        "ssl": {
-          "cafile": "/etc/nginx/tls.crt/composer.crt"
-        }
-      }
+      "url": "https://composer.silverorange.com"
     }
   ],
   "require": {
@@ -32,7 +27,7 @@
     "silverorange/site": "^5.0.0"
   },
   "require-dev": {
-    "silverorange/coding-standard": "^0.6.0"
+    "silverorange/coding-standard": "^1.0.0"
   },
   "scripts": {
     "lint": "./vendor/bin/phpcs",
